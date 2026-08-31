@@ -1,9 +1,0 @@
-{
-  "name": "sample-crypto-app",
-  "version": "1.0.0",
-  "dependencies": {
-    "jsonwebtoken": "^9.0.2",
-    "node-forge": "^1.3.1",
-    "bcrypt": "^5.1.1"
-  }
-}
