@@ -1,0 +1,8 @@
+{
+  "name": " ECDAT - Enterprise Cryptographic Discovery & Analysis Tool",
+  "description": "Enterprise Cryptographic Discovery & Analysis Tool for Post-Quantum Cryptography migration, CycloneDX 1.6 CBOM generation, and Mosca's theorem risk analysis.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

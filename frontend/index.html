@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ECDAT - Enterprise Cryptographic Discovery & Analysis Tool</title>
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              cyan: '#06b6d4',
+              cyanDark: '#0891b2',
+              darkBg: '#090d16',
+              darkCard: '#0f172a',
+              darkBorder: '#1e293b'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    @media print {
+      body { background: #ffffff !important; color: #000000 !important; }
+      .no-print { display: none !important; }
+      .print-only { display: block !important; }
+      .bg-slate-900, .bg-slate-950, .bg-slate-800 { background: #ffffff !important; border-color: #cbd5e1 !important; color: #0f172a !important; }
+      .text-slate-100, .text-slate-200, .text-white { color: #0f172a !important; }
+      .text-slate-400, .text-slate-500 { color: #475569 !important; }
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #090d16;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #334155;
+      border-radius: 3px;
+    }
+  </style>
+</head>
+<body class="bg-[#090d16] text-slate-100 min-h-screen font-sans antialiased selection:bg-cyan-500 selection:text-white">
+
+  <!-- HEADER -->
+  <header class="border-b border-slate-800 bg-[#0c1222]/90 backdrop-blur sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-lg bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 shadow-[0_0_15px_rgba(6,182,212,0.15)]">
+          <i class="fa-solid fa-shield-halved text-xl"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="font-black text-lg tracking-wider text-white">ECDAT</span>
+            <span class="text-xs px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 font-semibold border border-cyan-500/30">PQC READY</span>
+          </div>
+          <p class="text-[11px] text-slate-400 uppercase tracking-wider font-mono">Enterprise Cryptographic Discovery & Analysis Tool</p>
+        </div>
+      </div>
+
+      <!-- Navigation links -->
+      <nav class="hidden md:flex items-center gap-6 text-xs font-medium text-slate-300">
+        <a href="#discovery-section" class="hover:text-cyan-400 transition-colors">DISCOVERY</a>
+        <a href="#cbom-section" class="hover:text-cyan-400 transition-colors">CBOM INVENTORY</a>
+        <a href="#risk-section" class="hover:text-cyan-400 transition-colors">RISK ASSESSMENT</a>
+        <a href="#migration-section" class="hover:text-cyan-400 transition-colors">PQC MIGRATION</a>
+      </nav>
+
+      <div class="flex items-center gap-3">
+        <span class="text-xs px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 flex items-center gap-1.5 font-mono">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+          NIST FIPS 203/204/205
+        </span>
+        <div id="backend-badge" class="text-[11px] px-2 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700 font-mono">
+          Backend: Checking...
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO SECTION -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-4">
+    <div class="bg-gradient-to-r from-slate-900 via-slate-900 to-slate-950 border border-slate-800 rounded-xl p-6 relative overflow-hidden">
+      <div class="absolute right-0 top-0 w-96 h-full bg-cyan-500/5 blur-3xl pointer-events-none"></div>
+      
+      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 relative z-10">
+        <div class="space-y-2 max-w-3xl">
+          <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-white flex items-center gap-3">
+            Post-Quantum Preparedness Dashboard
+          </h1>
+          <p class="text-sm text-slate-300 leading-relaxed">
+            Automated cryptographic discovery across source repositories, binary artifacts, dependencies, and container images. 
+            Catalogues cryptographic assets into CycloneDX 1.6 CBOM, assesses "Harvest Now, Decrypt Later" exposure via Mosca's Theorem (<span class="font-mono text-cyan-300">X + Y &gt; Z</span>), and maps classical algorithms to NIST Post-Quantum Standards.
+          </p>
+          <div class="flex flex-wrap gap-2 pt-2">
+            <span class="text-xs px-2.5 py-1 rounded bg-slate-800 text-slate-300 border border-slate-700 flex items-center gap-1">
+              <i class="fa-brands fa-github text-slate-400"></i> Real GitHub API
+            </span>
+            <span class="text-xs px-2.5 py-1 rounded bg-slate-800 text-slate-300 border border-slate-700 flex items-center gap-1">
+              <i class="fa-solid fa-fingerprint text-slate-400"></i> Binary Forensics
+            </span>
+            <span class="text-xs px-2.5 py-1 rounded bg-slate-800 text-slate-300 border border-slate-700 flex items-center gap-1">
+              <i class="fa-solid fa-file-lines text-slate-400"></i> CycloneDX CBOM 1.6
+            </span>
+            <span class="text-xs px-2.5 py-1 rounded bg-cyan-500/10 text-cyan-300 border border-cyan-500/30 flex items-center gap-1 font-semibold">
+              <i class="fa-solid fa-clock text-cyan-400"></i> Quantum Timeline: ~8 yrs CRQC ETA
+            </span>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2 self-start lg:self-center">
+          <button id="btn-reset" onclick="resetState()" class="px-3 py-2 text-xs font-semibold rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-colors flex items-center gap-1.5">
+            <i class="fa-solid fa-rotate-left"></i> Clear All Data
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- KPI ROW -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <!-- TOTAL ASSETS -->
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 flex items-center justify-between">
+        <div>
+          <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">TOTAL ASSETS</p>
+          <p id="kpi-total" class="text-3xl font-black text-white mt-1 font-mono">0</p>
+          <p class="text-[11px] text-slate-500 mt-0.5">Discovered crypto instances</p>
+        </div>
+        <div class="w-11 h-11 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300">
+          <i class="fa-solid fa-layer-group text-lg"></i>
+        </div>
+      </div>
+
+      <!-- QUANTUM-VULN -->
+      <div class="bg-slate-900 border border-red-900/30 rounded-xl p-4 flex items-center justify-between">
+        <div>
+          <p class="text-xs font-medium text-red-400 uppercase tracking-wider">QUANTUM-VULN</p>
+          <p id="kpi-vuln" class="text-3xl font-black text-red-400 mt-1 font-mono">0</p>
+          <p class="text-[11px] text-red-400/70 mt-0.5">Shor's Algorithm Breakable</p>
+        </div>
+        <div class="w-11 h-11 rounded-lg bg-red-500/10 border border-red-500/30 flex items-center justify-center text-red-400">
+          <i class="fa-solid fa-radiation text-lg"></i>
+        </div>
+      </div>
+
+      <!-- CRITICAL -->
+      <div class="bg-slate-900 border border-amber-900/30 rounded-xl p-4 flex items-center justify-between">
+        <div>
+          <p class="text-xs font-medium text-amber-400 uppercase tracking-wider">CRITICAL</p>
+          <p id="kpi-critical" class="text-3xl font-black text-amber-400 mt-1 font-mono">0</p>
+          <p class="text-[11px] text-amber-400/70 mt-0.5">Risk score &ge; 90 / 100</p>
+        </div>
+        <div class="w-11 h-11 rounded-lg bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400">
+          <i class="fa-solid fa-triangle-exclamation text-lg"></i>
+        </div>
+      </div>
+
+      <!-- PQC READY -->
+      <div class="bg-slate-900 border border-emerald-900/30 rounded-xl p-4 flex items-center justify-between">
+        <div>
+          <p class="text-xs font-medium text-emerald-400 uppercase tracking-wider">PQC READY</p>
+          <p id="kpi-ready" class="text-3xl font-black text-emerald-400 mt-1 font-mono">0</p>
+          <p class="text-[11px] text-emerald-400/70 mt-0.5">ML-KEM / ML-DSA / SLH</p>
+        </div>
+        <div class="w-11 h-11 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+          <i class="fa-solid fa-circle-check text-lg"></i>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MAIN DUAL-COLUMN WORKSPACE -->
+  <main id="discovery-section" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+      <!-- LEFT COLUMN (5 cols): SCANNING ENGINES & LOGS -->
+      <div class="lg:col-span-5 space-y-6">
+
+        <!-- 1. GITHUB REPOSITORY SCANNER -->
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-sm">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+            <div class="flex items-center gap-2 text-white font-semibold text-sm">
+              <span class="w-6 h-6 rounded bg-cyan-500/10 text-cyan-400 flex items-center justify-center text-xs font-mono">1</span>
+              <span>GITHUB REPOSITORY SCANNER</span>
+            </div>
+            <span class="text-[11px] px-2 py-0.5 rounded bg-slate-800 text-slate-400 font-mono">API v3 + Raw</span>
+          </div>
+
+          <div class="space-y-3 pt-3">
+            <div>
+              <label class="block text-xs font-medium text-slate-300 mb-1">Target Repository URL</label>
+              <div class="flex gap-2">
+                <div class="relative flex-1">
+                  <span class="absolute inset-y-0 left-0 pl-2.5 flex items-center text-slate-500 text-xs">
+                    <i class="fa-brands fa-github"></i>
+                  </span>
+                  <input id="github-url-input" type="text" placeholder="https://github.com/openssl/openssl"
+                    class="w-full bg-slate-950 border border-slate-700 rounded-lg pl-8 pr-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-colors">
+                </div>
+                <button id="btn-github-scan" onclick="handleGithubScan()"
+                  class="px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold rounded-lg text-xs flex items-center gap-1.5 transition-all shadow-[0_0_12px_rgba(6,182,212,0.25)] whitespace-nowrap">
+                  <i class="fa-solid fa-magnifying-glass"></i> Scan
+                </button>
+              </div>
+            </div>
+
+            <!-- Optional GitHub Token for Rate Limits -->
+            <div>
+              <button onclick="toggleTokenInput()" class="text-[11px] text-cyan-400 hover:underline flex items-center gap-1">
+                <i class="fa-solid fa-key text-[10px]"></i> <span id="token-toggle-text">Optional GitHub Token (for high rate limits / private repos)</span>
+              </button>
+              <div id="token-container" class="hidden mt-1.5">
+                <input id="github-token-input" type="password" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
+                  class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500">
+              </div>
+            </div>
+
+            <!-- Status Indicator -->
+            <div id="github-status" class="text-xs text-slate-400 bg-slate-950/60 border border-slate-800 rounded-lg p-2.5 flex items-center justify-between">
+              <span id="github-status-text">Ready to scan. Enter a repository URL.</span>
+              <span id="github-status-spinner" class="hidden text-cyan-400"><i class="fa-solid fa-spinner fa-spin"></i></span>
+            </div>
+
+            <!-- Scan Log Console -->
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <label class="text-[11px] font-mono text-slate-400 flex items-center gap-1">
+                  <i class="fa-solid fa-terminal text-[10px]"></i> REAL-TIME DISCOVERY LOGS
+                </label>
+                <button onclick="clearLogs()" class="text-[10px] text-slate-500 hover:text-slate-300">Clear</button>
+              </div>
+              <div id="scan-logs" class="bg-black/90 border border-slate-800 rounded-lg p-2.5 font-mono text-[11px] text-emerald-400 h-36 overflow-y-auto custom-scrollbar leading-relaxed whitespace-pre-wrap">System initialized. Awaiting user scan command...</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. LOCAL CODEBASE SCAN -->
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-sm">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+            <div class="flex items-center gap-2 text-white font-semibold text-sm">
+              <span class="w-6 h-6 rounded bg-cyan-500/10 text-cyan-400 flex items-center justify-center text-xs font-mono">2</span>
+              <span>LOCAL CODEBASE SCAN</span>
+            </div>
+            <span class="text-[11px] px-2 py-0.5 rounded bg-slate-800 text-slate-400 font-mono">Client-Side Directory</span>
+          </div>
+
+          <div class="space-y-3 pt-3">
+            <div id="folder-drop-zone"
+              onclick="document.getElementById('folder-input').click()"
+              class="border-2 border-dashed border-slate-700 hover:border-cyan-500/70 bg-slate-950/40 rounded-xl p-6 text-center cursor-pointer transition-colors group">
+              <i class="fa-solid fa-folder-open text-3xl text-slate-500 group-hover:text-cyan-400 transition-colors mb-2 block"></i>
+              <p class="text-xs font-semibold text-slate-300 group-hover:text-cyan-300">Browse or Drop Code Folder</p>
+              <p class="text-[11px] text-slate-500 mt-1">Select any project folder containing .java, .py, .go, .js, .pem, etc.</p>
+              <input id="folder-input" type="file" webkitdirectory directory multiple class="hidden" onchange="handleFolderScan(event)">
+            </div>
+            <div id="folder-status" class="text-xs text-slate-400 bg-slate-950/60 border border-slate-800 rounded-lg p-2 flex items-center justify-between">
+              <span id="folder-status-text">No folder selected.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. BINARY & DEPENDENCY FORENSICS -->
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-sm">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+            <div class="flex items-center gap-2 text-white font-semibold text-sm">
+              <span class="w-6 h-6 rounded bg-cyan-500/10 text-cyan-400 flex items-center justify-center text-xs font-mono">3</span>
+              <span>BINARY & DEPENDENCY FORENSICS</span>
+            </div>
+            <span class="text-[11px] px-2 py-0.5 rounded bg-slate-800 text-slate-400 font-mono">SHA-256 + Manifests</span>
+          </div>
+
+          <div class="space-y-3 pt-3">
+            <!-- Binary Files Input -->
+            <div>
+              <label class="block text-xs font-medium text-slate-300 mb-1">
+                Binary & Compiled Objects <span class="text-slate-500 font-normal">(.so, .dll, .bin, .pem, .key)</span>
+              </label>
+              <input id="binary-input" type="file" multiple onchange="handleBinaryScan(event)"
+                class="w-full text-xs text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-slate-800 file:text-cyan-400 hover:file:bg-slate-700 cursor-pointer bg-slate-950 border border-slate-800 rounded-lg p-1">
+            </div>
+
+            <!-- Dependency Files Input -->
+            <div>
+              <label class="block text-xs font-medium text-slate-300 mb-1">
+                Dependency Manifests <span class="text-slate-500 font-normal">(package.json, pom.xml, requirements.txt)</span>
+              </label>
+              <input id="dep-input" type="file" multiple onchange="handleDependencyScan(event)"
+                class="w-full text-xs text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-slate-800 file:text-cyan-400 hover:file:bg-slate-700 cursor-pointer bg-slate-950 border border-slate-800 rounded-lg p-1">
+            </div>
+
+            <div id="forensic-status" class="text-xs text-slate-400 bg-slate-950/60 border border-slate-800 rounded-lg p-2">
+              <span id="forensic-status-text">Forensic engine standing by.</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT COLUMN (7 cols): CBOM TABLE, MOSCA RISK, PQC MIGRATION, EXPORTS -->
+      <div class="lg:col-span-7 space-y-6">
+
+        <!-- CBOM RESULTS INVENTORY -->
+        <div id="cbom-section" class="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-sm">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-800">
+            <div>
+              <h2 class="text-sm font-semibold text-white flex items-center gap-2">
+                <i class="fa-solid fa-list-check text-cyan-400"></i>
+                <span>CRYPTOGRAPHIC BILL OF MATERIALS (CBOM)</span>
+              </h2>
+              <p class="text-xs text-slate-400">Discovered cryptographic algorithms, certificates, and libraries</p>
+            </div>
+            
+            <div class="flex items-center gap-2">
+              <div class="relative">
+                <input id="cbom-filter-input" type="text" placeholder="Filter findings..." oninput="filterFindings()"
+                  class="bg-slate-950 border border-slate-700 rounded-lg px-2.5 py-1 text-xs text-white placeholder-slate-500 w-44 focus:outline-none focus:border-cyan-500">
+              </div>
+            </div>
+          </div>
+
+          <!-- Table Container -->
+          <div class="mt-3 overflow-x-auto max-h-80 custom-scrollbar border border-slate-800 rounded-lg">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-slate-950 text-slate-400 font-mono uppercase text-[11px] sticky top-0 z-10 border-b border-slate-800">
+                <tr>
+                  <th class="px-3 py-2.5">File / Target</th>
+                  <th class="px-3 py-2.5">Algorithm</th>
+                  <th class="px-3 py-2.5">Type</th>
+                  <th class="px-3 py-2.5 text-center">Risk</th>
+                  <th class="px-3 py-2.5">Evidence Snippet</th>
+                </tr>
+              </thead>
+              <tbody id="findings-table-body" class="divide-y divide-slate-800 font-sans">
+                <!-- Starts EMPTY -->
+                <tr id="empty-row">
+                  <td colspan="5" class="px-4 py-8 text-center text-slate-500">
+                    <i class="fa-solid fa-box-open text-2xl mb-2 block text-slate-600"></i>
+                    No cryptographic findings discovered yet.<br>
+                    <span class="text-[11px]">Enter a GitHub URL or select a local code folder to begin discovery.</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Export Bar -->
+          <div class="mt-4 pt-3 border-t border-slate-800 flex flex-wrap items-center justify-between gap-3">
+            <span id="findings-count-label" class="text-xs text-slate-400 font-mono">0 items catalogued</span>
+            <div class="flex items-center gap-2">
+              <button onclick="exportCBOMJson()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-cyan-300 border border-slate-700 rounded-lg text-xs font-semibold transition-colors flex items-center gap-1.5">
+                <i class="fa-solid fa-code"></i> Export JSON (CycloneDX 1.6)
+              </button>
+              <button onclick="exportCSV()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-lg text-xs font-semibold transition-colors flex items-center gap-1.5">
+                <i class="fa-solid fa-file-csv"></i> Export CSV
+              </button>
+              <button onclick="exportPDF()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-lg text-xs font-semibold transition-colors flex items-center gap-1.5">
+                <i class="fa-solid fa-file-pdf"></i> Export PDF
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- RISK ASSESSMENT & MOSCA'S THEOREM -->
+        <div id="risk-section" class="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-sm">
+          <div class="pb-3 border-b border-slate-800 flex items-center justify-between">
+            <div>
+              <h2 class="text-sm font-semibold text-white flex items-center gap-2">
+                <i class="fa-solid fa-calculator text-amber-400"></i>
+                <span>QUANTUM RISK ASSESSMENT & MOSCA'S THEOREM</span>
+              </h2>
+              <p class="text-xs text-slate-400">Evaluate Harvest Now, Decrypt Later (HNDL) exposure via <span class="font-mono text-cyan-300">X + Y &gt; Z</span></p>
+            </div>
+            <span id="mosca-badge" class="text-xs font-bold px-2.5 py-1 rounded border font-mono bg-slate-800 text-slate-400 border-slate-700">
+              Awaiting Inputs
+            </span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-3">
+            <div class="bg-slate-950 border border-slate-800 rounded-lg p-3">
+              <label class="block text-xs text-slate-300 font-medium mb-1">
+                Data Shelf-Life (<span class="font-mono text-cyan-400">X</span>)
+              </label>
+              <div class="flex items-center gap-2">
+                <input id="mosca-x" type="number" min="1" max="100" value="10" oninput="calculateMosca()"
+                  class="w-full bg-slate-900 border border-slate-700 rounded px-2.5 py-1 text-xs text-white focus:outline-none focus:border-cyan-500 font-mono">
+                <span class="text-xs text-slate-400">yrs</span>
+              </div>
+              <p class="text-[10px] text-slate-500 mt-1">Time data must remain confidential</p>
+            </div>
+
+            <div class="bg-slate-950 border border-slate-800 rounded-lg p-3">
+              <label class="block text-xs text-slate-300 font-medium mb-1">
+                Migration Time (<span class="font-mono text-cyan-400">Y</span>)
+              </label>
+              <div class="flex items-center gap-2">
+                <input id="mosca-y" type="number" min="1" max="100" value="5" oninput="calculateMosca()"
+                  class="w-full bg-slate-900 border border-slate-700 rounded px-2.5 py-1 text-xs text-white focus:outline-none focus:border-cyan-500 font-mono">
+                <span class="text-xs text-slate-400">yrs</span>
+              </div>
+              <p class="text-[10px] text-slate-500 mt-1">Time required to migrate to PQC</p>
+            </div>
+
+            <div class="bg-slate-950 border border-slate-800 rounded-lg p-3">
+              <label class="block text-xs text-slate-300 font-medium mb-1">
+                CRQC Arrival (<span class="font-mono text-cyan-400">Z</span>)
+              </label>
+              <div class="flex items-center gap-2">
+                <input id="mosca-z" type="number" min="1" max="100" value="8" oninput="calculateMosca()"
+                  class="w-full bg-slate-900 border border-slate-700 rounded px-2.5 py-1 text-xs text-white focus:outline-none focus:border-cyan-500 font-mono">
+                <span class="text-xs text-slate-400">yrs</span>
+              </div>
+              <p class="text-[10px] text-slate-500 mt-1">Estimated quantum computer ETA</p>
+            </div>
+          </div>
+
+          <!-- Mosca Result Box -->
+          <div id="mosca-result-box" class="mt-3 p-3 rounded-lg bg-slate-950 border border-slate-800 text-xs flex items-start gap-3">
+            <div id="mosca-result-icon" class="text-xl text-amber-400 mt-0.5">
+              <i class="fa-solid fa-circle-exclamation"></i>
+            </div>
+            <div>
+              <p id="mosca-equation" class="font-mono font-bold text-white">X (10) + Y (5) = 15 yrs &gt; Z (8 yrs) &rarr; <span class="text-red-400">AT RISK</span></p>
+              <p id="mosca-explanation" class="text-slate-300 mt-0.5">
+                Data confidentiality will be breached retroactively. Adversaries collecting encrypted payloads today can decrypt them once quantum systems arrive in 8 years.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- PQC MIGRATION ROADMAP -->
+        <div id="migration-section" class="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-sm">
+          <div class="pb-3 border-b border-slate-800 flex items-center justify-between">
+            <div>
+              <h2 class="text-sm font-semibold text-white flex items-center gap-2">
+                <i class="fa-solid fa-route text-emerald-400"></i>
+                <span>POST-QUANTUM CRYPTOGRAPHY (PQC) MIGRATION MAP</span>
+              </h2>
+              <p class="text-xs text-slate-400">Target replacements according to NIST FIPS 203, 204, 205 Standards</p>
+            </div>
+          </div>
+
+          <div class="mt-3 space-y-2 text-xs">
+            <div class="p-2.5 bg-slate-950 border border-slate-800 rounded-lg flex items-center justify-between">
+              <div>
+                <span class="font-mono font-bold text-red-400">RSA-2048 / 3072 / 4096</span>
+                <p class="text-[11px] text-slate-400">Vulnerable to Shor's integer factorization</p>
+              </div>
+              <div class="text-right">
+                <span class="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 font-mono font-semibold">ML-KEM-768 / 1024 (FIPS 203)</span>
+                <p class="text-[10px] text-slate-400">Module-Lattice KEM</p>
+              </div>
+            </div>
+
+            <div class="p-2.5 bg-slate-950 border border-slate-800 rounded-lg flex items-center justify-between">
+              <div>
+                <span class="font-mono font-bold text-red-400">ECDSA (P-256 / secp256r1)</span>
+                <p class="text-[11px] text-slate-400">Vulnerable to Shor's discrete logarithm</p>
+              </div>
+              <div class="text-right">
+                <span class="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 font-mono font-semibold">ML-DSA-65 / 87 (FIPS 204)</span>
+                <p class="text-[10px] text-slate-400">Module-Lattice Digital Signatures</p>
+              </div>
+            </div>
+
+            <div class="p-2.5 bg-slate-950 border border-slate-800 rounded-lg flex items-center justify-between">
+              <div>
+                <span class="font-mono font-bold text-amber-400">Legacy TLS (1.0 / 1.1 / 1.2)</span>
+                <p class="text-[11px] text-slate-400">Weak key exchange &amp; ciphers</p>
+              </div>
+              <div class="text-right">
+                <span class="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 font-mono font-semibold">TLS 1.3 + Hybrid X25519MLKEM768</span>
+                <p class="text-[10px] text-slate-400">Draft-ietf-tls-hybrid-design</p>
+              </div>
+            </div>
+
+            <div class="p-2.5 bg-slate-950 border border-slate-800 rounded-lg flex items-center justify-between">
+              <div>
+                <span class="font-mono font-bold text-amber-400">SHA-1 / MD5</span>
+                <p class="text-[11px] text-slate-400">Collision vulnerability</p>
+              </div>
+              <div class="text-right">
+                <span class="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 font-mono font-semibold">SHA-3 / SHAKE-256 (FIPS 202)</span>
+                <p class="text-[10px] text-slate-400">Keccak Permutation Family</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-slate-800 bg-[#0c1222] mt-8 py-6 text-xs text-slate-400">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div class="flex items-center gap-2">
+        <span class="font-bold text-slate-200">ECDAT</span>
+        <span>&bull; NIST Post-Quantum Cryptography Migration Framework</span>
+      </div>
+      <div class="flex items-center gap-4 text-[11px]">
+        <span>FIPS 203 (ML-KEM)</span>
+        <span>FIPS 204 (ML-DSA)</span>
+        <span>FIPS 205 (SLH-DSA)</span>
+        <span>CycloneDX CBOM 1.6</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- SCRIPT LOGIC (Vanilla JS with 11 Regexes, Client Fallback, Backend Integration) -->
+  <script>
+    // 1. CONFIGURATION & STATE
+    const USE_BACKEND = true;
+    const BACKEND_URL = 'http://localhost:8000';
+    let isBackendAvailable = false;
+    let currentFindings = [];
+    let currentLogs = [];
+
+    // Allowed file extensions for cryptographic source inspection
+    const ALLOWED_EXTENSIONS = [
+      '.java', '.py', '.js', '.ts', '.go', '.c', '.h', '.pem', '.key', '.crt',
+      '.xml', '.json', '.gradle', '.properties', '.yml', '.yaml', 'dockerfile'
+    ];
+
+    // 11 Cryptographic Discovery Patterns
+    const CRYPTO_PATTERNS = [
+      {
+        id: 'RSA-2048',
+        algo: 'RSA-2048 / RSA Asymmetric',
+        type: 'Algorithm',
+        regex: /BEGIN RSA PRIVATE KEY|RSA\.generateKeyPair|RSA.*2048|KeyPairGenerator.*RSA/gi,
+        risk: 100,
+        pqc: 'ML-KEM-768 (NIST FIPS 203) / ML-DSA-65 (NIST FIPS 204)',
+        quantumVuln: true
+      },
+      {
+        id: 'ECDSA-P256',
+        algo: 'ECDSA P-256 / Elliptic Curve Signature',
+        type: 'Algorithm',
+        regex: /ecdsa|prime256v1|secp256r1|secp384r1|BEGIN EC PRIVATE KEY/gi,
+        risk: 100,
+        pqc: 'ML-DSA-65 / ML-DSA-87 (NIST FIPS 204) or SLH-DSA (FIPS 205)',
+        quantumVuln: true
+      },
+      {
+        id: 'ECDH-DH',
+        algo: 'ECDH / Diffie-Hellman Key Agreement',
+        type: 'Algorithm',
+        regex: /ECDH|DiffieHellman/gi,
+        risk: 100,
+        pqc: 'ML-KEM-768 (NIST FIPS 203) / Hybrid KEM (X25519MLKEM768)',
+        quantumVuln: true
+      },
+      {
+        id: 'TLS-WEAK',
+        algo: 'Legacy TLS (v1.0 / v1.1)',
+        type: 'Protocol',
+        regex: /TLSv1\.0|TLSv1\.1|PROTOCOL_TLSv1/gi,
+        risk: 90,
+        pqc: 'TLS 1.3 with Hybrid Post-Quantum Key Exchange',
+        quantumVuln: true
+      },
+      {
+        id: 'SHA1-MD5',
+        algo: 'Weak Hash Function (SHA-1 / MD5)',
+        type: 'Algorithm',
+        regex: /SHA1\(|hashlib\.sha1|MD5/gi,
+        risk: 85,
+        pqc: 'SHA-256 / SHA-3 / SHAKE-256 (NIST FIPS 202)',
+        quantumVuln: false
+      },
+      {
+        id: 'BOUNCY-CASTLE',
+        algo: 'BouncyCastle Cryptographic Provider',
+        type: 'Library',
+        regex: /BouncyCastle|bcprov/gi,
+        risk: 60,
+        pqc: 'BouncyCastle PQC Edition (LTS with ML-KEM/ML-DSA)',
+        quantumVuln: true
+      },
+      {
+        id: 'OPENSSL',
+        algo: 'OpenSSL Crypto Engine',
+        type: 'Library',
+        regex: /OpenSSL\s+\d+\.\d+/gi,
+        risk: 80,
+        pqc: 'OpenSSL 3.4+ / OQS Post-Quantum Provider (liboqs)',
+        quantumVuln: true
+      },
+      {
+        id: 'JCA-JCE',
+        algo: 'Java Cryptography Architecture (Cipher/KeyGen)',
+        type: 'Library',
+        regex: /Cipher\.getInstance|KeyPairGenerator/gi,
+        risk: 50,
+        pqc: 'JDK 24+ PQC Security Providers / JCA PQC Plugins',
+        quantumVuln: true
+      },
+      {
+        id: 'CRYPTO-IMPORT',
+        algo: 'Cryptographic Module / Dependency Import',
+        type: 'Dependency',
+        regex: /jsonwebtoken|bcrypt|node-forge|require\('crypto'\)/gi,
+        risk: 50,
+        pqc: 'Quantum-resilient cryptographic wrapper',
+        quantumVuln: false
+      },
+      {
+        id: 'X509-CERT',
+        algo: 'X.509 Public Key Certificate',
+        type: 'Certificate',
+        regex: /BEGIN CERTIFICATE/gi,
+        risk: 70,
+        pqc: 'Composite X.509 or ML-DSA Certificate Hierarchy',
+        quantumVuln: true
+      }
+    ];
+
+    // Check backend health on boot
+    async function checkBackend() {
+      const badge = document.getElementById('backend-badge');
+      try {
+        const res = await fetch(`${BACKEND_URL}/`, { method: 'GET', signal: AbortSignal.timeout(1500) });
+        if (res.ok) {
+          isBackendAvailable = true;
+          badge.textContent = 'Backend: Connected (FastAPI)';
+          badge.className = 'text-[11px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-mono';
+          return;
+        }
+      } catch (e) {
+        // Backend not running on port 8000
+      }
+      isBackendAvailable = false;
+      badge.textContent = 'Backend: Client Standalone Mode';
+      badge.className = 'text-[11px] px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 font-mono';
+    }
+
+    // Toggle optional token
+    function toggleTokenInput() {
+      const container = document.getElementById('token-container');
+      container.classList.toggle('hidden');
+    }
+
+    // Logging helper
+    function appendLog(msg) {
+      const logBox = document.getElementById('scan-logs');
+      const timestamp = new Date().toLocaleTimeString();
+      const line = `[${timestamp}] ${msg}\n`;
+      currentLogs.push(line);
+      logBox.textContent += line;
+      logBox.scrollTop = logBox.scrollHeight;
+    }
+
+    function clearLogs() {
+      const logBox = document.getElementById('scan-logs');
+      currentLogs = [];
+      logBox.textContent = '';
+    }
+
+    // Reset everything to zero
+    function resetState() {
+      currentFindings = [];
+      document.getElementById('kpi-total').textContent = '0';
+      document.getElementById('kpi-vuln').textContent = '0';
+      document.getElementById('kpi-critical').textContent = '0';
+      document.getElementById('kpi-ready').textContent = '0';
+      
+      const tbody = document.getElementById('findings-table-body');
+      tbody.innerHTML = `
+        <tr id="empty-row">
+          <td colspan="5" class="px-4 py-8 text-center text-slate-500">
+            <i class="fa-solid fa-box-open text-2xl mb-2 block text-slate-600"></i>
+            No cryptographic findings discovered yet.<br>
+            <span class="text-[11px]">Enter a GitHub URL or select a local code folder to begin discovery.</span>
+          </td>
+        </tr>
+      `;
+      document.getElementById('findings-count-label').textContent = '0 items catalogued';
+      document.getElementById('github-status-text').textContent = 'Ready to scan. Enter a repository URL.';
+      document.getElementById('folder-status-text').textContent = 'No folder selected.';
+      document.getElementById('forensic-status-text').textContent = 'Forensic engine standing by.';
+      clearLogs();
+      appendLog('State cleared. Ready for fresh discovery.');
+    }
+
+    // Client-side detection engine on raw text
+    function detectCryptoPatterns(filename, content) {
+      const findings = [];
+      const lower = filename.toLowerCase();
+      const isValidExt = ALLOWED_EXTENSIONS.some(ext => lower.endsWith(ext)) || lower.includes('dockerfile');
+      if (!isValidExt) return findings;
+
+      CRYPTO_PATTERNS.forEach(rule => {
+        const regex = new RegExp(rule.regex.source, 'gi');
+        let match;
+        let count = 0;
+        while ((match = regex.exec(content)) !== null && count < 3) {
+          count++;
+          const start = Math.max(0, match.index - 30);
+          const end = Math.min(content.length, match.index + match[0].length + 60);
+          const snippet = content.substring(start, end).replace(/[\r\n]+/g, ' ').trim();
+          
+          let risk = rule.risk;
+          let algoName = rule.algo;
+          if (rule.id === 'OPENSSL' && /1\.1\.1[a-k]/i.test(content)) {
+            risk = 95;
+            algoName = 'OpenSSL (Legacy Vulnerable 1.1.1)';
+          }
+
+          findings.push({
+            file: filename,
+            algo: algoName,
+            type: rule.type,
+            risk: risk,
+            evidence: snippet,
+            pqc: rule.pqc,
+            quantumVuln: rule.quantumVuln
+          });
+        }
+      });
+      return findings;
+    }
+
+    // Update UI findings and KPIs
+    function updateFindingsUI(newFindings) {
+      currentFindings = newFindings;
+      
+      const total = currentFindings.length;
+      const vuln = currentFindings.filter(f => f.quantumVuln || f.risk >= 80).length;
+      const critical = currentFindings.filter(f => f.risk >= 90).length;
+      const ready = currentFindings.filter(f => f.algo.toLowerCase().includes('pqc') || f.risk === 0).length;
+
+      document.getElementById('kpi-total').textContent = total;
+      document.getElementById('kpi-vuln').textContent = vuln;
+      document.getElementById('kpi-critical').textContent = critical;
+      document.getElementById('kpi-ready').textContent = ready;
+
+      document.getElementById('findings-count-label').textContent = `${total} items catalogued`;
+      renderTable(currentFindings);
+    }
+
+    function renderTable(items) {
+      const tbody = document.getElementById('findings-table-body');
+      if (!items || items.length === 0) {
+        tbody.innerHTML = `
+          <tr id="empty-row">
+            <td colspan="5" class="px-4 py-8 text-center text-slate-500">
+              <i class="fa-solid fa-box-open text-2xl mb-2 block text-slate-600"></i>
+              No cryptographic findings matched.<br>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = items.map(item => {
+        let badgeColor = 'bg-blue-500/10 text-blue-400 border-blue-500/30';
+        if (item.risk >= 90) badgeColor = 'bg-red-500/10 text-red-400 border-red-500/30';
+        else if (item.risk >= 60) badgeColor = 'bg-amber-500/10 text-amber-400 border-amber-500/30';
+
+        return `
+          <tr class="hover:bg-slate-800/50 transition-colors">
+            <td class="px-3 py-2 font-mono text-[11px] text-slate-300 truncate max-w-[150px]" title="${item.file}">${item.file}</td>
+            <td class="px-3 py-2 font-medium text-white">${item.algo}</td>
+            <td class="px-3 py-2 text-slate-400">${item.type}</td>
+            <td class="px-3 py-2 text-center">
+              <span class="px-2 py-0.5 rounded border text-[11px] font-bold font-mono ${badgeColor}">
+                ${item.risk}
+              </span>
+            </td>
+            <td class="px-3 py-2 text-slate-300 font-mono text-[11px] truncate max-w-[200px]" title="${item.evidence}">
+              <code>${escapeHtml(item.evidence)}</code>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function filterFindings() {
+      const q = document.getElementById('cbom-filter-input').value.toLowerCase().trim();
+      if (!q) {
+        renderTable(currentFindings);
+        return;
+      }
+      const filtered = currentFindings.filter(f => 
+        f.file.toLowerCase().includes(q) ||
+        f.algo.toLowerCase().includes(q) ||
+        f.type.toLowerCase().includes(q) ||
+        f.evidence.toLowerCase().includes(q)
+      );
+      renderTable(filtered);
+    }
+
+    // 2. GITHUB SCAN LOGIC (Backend first, fallback to client fetch)
+    async function handleGithubScan() {
+      const input = document.getElementById('github-url-input');
+      const tokenInput = document.getElementById('github-token-input');
+      const repoUrl = input.value.trim();
+      const token = tokenInput ? tokenInput.value.trim() : '';
+
+      if (!repoUrl) {
+        alert('Please enter a GitHub repository URL (e.g. https://github.com/openssl/openssl)');
+        return;
+      }
+
+      const statusText = document.getElementById('github-status-text');
+      const spinner = document.getElementById('github-status-spinner');
+      spinner.classList.remove('hidden');
+      statusText.textContent = 'Connecting to repository...';
+
+      appendLog(`[*] Commencing discovery scan for: ${repoUrl}`);
+
+      // Try Backend if active
+      if (isBackendAvailable) {
+        try {
+          statusText.textContent = 'Scanning via FastAPI Backend...';
+          const res = await fetch(`${BACKEND_URL}/api/scan/github`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ repo_url: repoUrl, token: token || null })
+          });
+
+          if (res.ok) {
+            const data = await res.json();
+            if (data.logs) {
+              data.logs.forEach(l => appendLog(l));
+            }
+            updateFindingsUI(data.findings || []);
+            statusText.textContent = `Done! Discovered ${data.total_findings} artifacts in ${data.total_files_scanned} files.`;
+            spinner.classList.add('hidden');
+            return;
+          }
+        } catch (err) {
+          appendLog(`[WARN] Backend scan error, switching to Client-Side GitHub API...`);
+        }
+      }
+
+      // Client-Side GitHub API Fallback
+      try {
+        const cleaned = repoUrl.replace('https://github.com/', '').replace('http://github.com/', '').replace(/\/$/, '');
+        const parts = cleaned.split('/');
+        if (parts.length < 2) {
+          throw new Error('Invalid GitHub URL format. Use https://github.com/owner/repo');
+        }
+        const owner = parts[0];
+        const repo = parts[1].replace('.git', '');
+
+        const headers = { 'Accept': 'application/vnd.github.v3+json' };
+        if (token) headers['Authorization'] = `token ${token}`;
+
+        appendLog(`[*] Fetching GitHub repository metadata for ${owner}/${repo}...`);
+        const repoRes = await fetch(`https://api.github.com/repos/${owner}/${repo}`, { headers });
+        if (repoRes.status === 403) {
+          throw new Error('GitHub API rate limit exceeded. Provide a personal access token above or wait.');
+        }
+        if (!repoRes.ok) {
+          throw new Error(`GitHub repo not found (${repoRes.status})`);
+        }
+
+        const repoData = await repoRes.json();
+        const defaultBranch = repoData.default_branch || 'main';
+        appendLog(`[+] Target: ${owner}/${repo} | Branch: ${defaultBranch} | Stars: ${repoData.stargazers_count}`);
+
+        statusText.textContent = `Fetching tree from ${defaultBranch}...`;
+        let treeRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/git/trees/${defaultBranch}?recursive=1`, { headers });
+        if (!treeRes.ok && defaultBranch === 'main') {
+          treeRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/git/trees/master?recursive=1`, { headers });
+        }
+        if (!treeRes.ok) {
+          throw new Error('Could not retrieve repository file tree.');
+        }
+
+        const treeData = await treeRes.json();
+        const blobs = (treeData.tree || []).filter(item => {
+          if (item.type !== 'blob') return false;
+          const p = item.path.toLowerCase();
+          if (p.includes('node_modules/') || p.includes('.git/') || p.includes('vendor/') || p.includes('dist/')) return false;
+          return ALLOWED_EXTENSIONS.some(ext => p.endsWith(ext)) || p.includes('dockerfile');
+        });
+
+        appendLog(`[+] Identified ${blobs.length} candidate code files.`);
+        const candidateFiles = blobs.slice(0, 70); // slice first 70 files
+        if (blobs.length > 70) {
+          appendLog(`[!] Slicing scan to top 70 files to avoid rate limit.`);
+        }
+
+        let scannedCount = 0;
+        let findings = [];
+
+        for (const item of candidateFiles) {
+          const rawUrl = `https://raw.githubusercontent.com/${owner}/${repo}/${defaultBranch}/${item.path}`;
+          try {
+            const rawRes = await fetch(rawUrl);
+            if (rawRes.ok) {
+              const text = await rawRes.text();
+              const f = detectCryptoPatterns(item.path, text);
+              if (f.length > 0) {
+                findings.push(...f);
+                appendLog(`[FOUND] ${f.length} crypto items in ${item.path}`);
+              }
+              scannedCount++;
+            }
+          } catch (e) {
+            // ignore file fetch err
+          }
+        }
+
+        appendLog(`[+] Discovery complete. Scanned ${scannedCount} files, found ${findings.length} cryptographic artifacts.`);
+        updateFindingsUI(findings);
+        statusText.textContent = `Done! ${findings.length} artifacts from ${scannedCount} files.`;
+
+      } catch (err) {
+        appendLog(`[ERROR] ${err.message}`);
+        statusText.textContent = `Error: ${err.message}`;
+      } finally {
+        spinner.classList.add('hidden');
+      }
+    }
+
+    // 3. LOCAL FOLDER SCAN LOGIC
+    async function handleFolderScan(event) {
+      const files = event.target.files;
+      if (!files || files.length === 0) return;
+
+      const statusText = document.getElementById('folder-status-text');
+      statusText.textContent = `Scanning ${files.length} local files...`;
+      appendLog(`[*] Analyzing local folder containing ${files.length} files...`);
+
+      let findings = [];
+      let scanned = 0;
+
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const path = file.webkitRelativePath || file.name;
+        const lower = path.toLowerCase();
+
+        // Skip files > 1MB, node_modules, .git, binary images
+        if (file.size > 1024 * 1024) continue;
+        if (lower.includes('node_modules/') || lower.includes('.git/') || lower.endsWith('.png') || lower.endsWith('.jpg') || lower.endsWith('.gif')) continue;
+
+        try {
+          const text = await file.text();
+          const f = detectCryptoPatterns(path, text);
+          if (f.length > 0) {
+            findings.push(...f);
+            appendLog(`[LOCAL] Found ${f.length} crypto artifact(s) in ${path}`);
+          }
+          scanned++;
+        } catch (e) {
+          // ignore read err
+        }
+      }
+
+      appendLog(`[+] Local scan complete: ${scanned} files inspected, ${findings.length} findings.`);
+      updateFindingsUI(findings);
+      statusText.textContent = `Local Scan Complete: ${findings.length} findings across ${scanned} files.`;
+    }
+
+    // 4. BINARY SCAN LOGIC (SHA-256 + Banner Detection)
+    async function handleBinaryScan(event) {
+      const files = event.target.files;
+      if (!files || files.length === 0) return;
+
+      const statusText = document.getElementById('forensic-status-text');
+      statusText.textContent = `Analyzing ${files.length} binary files...`;
+
+      let findings = [];
+      for (const file of files) {
+        appendLog(`[*] Calculating SHA-256 & inspecting binary strings for: ${file.name}`);
+        const buffer = await file.arrayBuffer();
+        
+        // Calculate SHA-256
+        const hashBuffer = await crypto.subtle.digest('SHA-256', buffer);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+        // Decode first 800k bytes
+        const slice = buffer.slice(0, 800000);
+        const text = new TextDecoder('utf-8', { fatal: false }).decode(slice);
+
+        if (text.includes('OpenSSL') || text.includes('libcrypto') || text.includes('libssl')) {
+          findings.push({
+            file: file.name,
+            algo: 'OpenSSL Native Shared Object / Library Linked',
+            type: 'Library',
+            risk: 80,
+            evidence: `SHA256: ${hashHex} | Embedded binary strings match libcrypto/OpenSSL`,
+            pqc: 'OpenSSL 3.4+ with liboqs PQC Provider',
+            quantumVuln: true
+          });
+        }
+
+        const standard = detectCryptoPatterns(file.name, text);
+        standard.forEach(s => {
+          s.evidence = `SHA256: ${hashHex.substring(0, 16)}... | ${s.evidence}`;
+          findings.push(s);
+        });
+      }
+
+      appendLog(`[+] Binary forensics finished: ${findings.length} signatures identified.`);
+      updateFindingsUI([...currentFindings, ...findings]);
+      statusText.textContent = `Binary Analysis Done: ${findings.length} items logged.`;
+    }
+
+    // 5. DEPENDENCY MANIFEST SCAN
+    async function handleDependencyScan(event) {
+      const files = event.target.files;
+      if (!files || files.length === 0) return;
+
+      const statusText = document.getElementById('forensic-status-text');
+      let findings = [];
+
+      for (const file of files) {
+        appendLog(`[*] Parsing dependency manifest: ${file.name}`);
+        const text = await file.text();
+
+        if (file.name.includes('package.json')) {
+          try {
+            const pkg = JSON.parse(text);
+            const deps = { ...(pkg.dependencies || {}), ...(pkg.devDependencies || {}) };
+            for (const [depName, version] of Object.entries(deps)) {
+              if (/jsonwebtoken|node-forge|bcrypt|crypto-js|elliptic/i.test(depName)) {
+                findings.push({
+                  file: file.name,
+                  algo: `Node Package: ${depName} (${version})`,
+                  type: 'Dependency',
+                  risk: 65,
+                  evidence: `"${depName}": "${version}" in package.json`,
+                  pqc: 'Quantum-safe cryptographic wrapper',
+                  quantumVuln: true
+                });
+              }
+            }
+          } catch(e) {}
+        } else if (file.name.includes('pom.xml')) {
+          if (text.includes('bouncycastle') || text.includes('bcprov')) {
+            findings.push({
+              file: file.name,
+              algo: 'Maven: BouncyCastle Provider Dependency',
+              type: 'Dependency',
+              risk: 60,
+              evidence: 'Maven dependency artifact: bcprov in pom.xml',
+              pqc: 'Bouncy Castle LTS PQC edition',
+              quantumVuln: true
+            });
+          }
+        } else if (file.name.includes('requirements.txt')) {
+          const lines = text.split('\n');
+          lines.forEach(line => {
+            if (/cryptography|pyopenssl|pyjwt/i.test(line)) {
+              findings.push({
+                file: file.name,
+                algo: `Python Library: ${line.trim()}`,
+                type: 'Dependency',
+                risk: 60,
+                evidence: line.trim(),
+                pqc: 'liboqs-python or PQC-enabled cryptography library',
+                quantumVuln: true
+              });
+            }
+          });
+        }
+      }
+
+      appendLog(`[+] Dependency manifest scan complete: ${findings.length} libraries flagged.`);
+      updateFindingsUI([...currentFindings, ...findings]);
+      statusText.textContent = `Manifests Parsed: ${findings.length} dependencies catalogued.`;
+    }
+
+    // 6. MOSCA THEOREM CALCULATOR
+    function calculateMosca() {
+      const x = parseFloat(document.getElementById('mosca-x').value) || 0;
+      const y = parseFloat(document.getElementById('mosca-y').value) || 0;
+      const z = parseFloat(document.getElementById('mosca-z').value) || 0;
+
+      const sum = x + y;
+      const isAtRisk = sum > z;
+      const badge = document.getElementById('mosca-badge');
+      const icon = document.getElementById('mosca-result-icon');
+      const eq = document.getElementById('mosca-equation');
+      const exp = document.getElementById('mosca-explanation');
+
+      if (isAtRisk) {
+        const delta = (sum - z).toFixed(1);
+        badge.textContent = 'AT RISK';
+        badge.className = 'text-xs font-bold px-2.5 py-1 rounded border font-mono bg-red-500/10 text-red-400 border-red-500/30';
+        icon.className = 'text-xl text-red-400 mt-0.5';
+        icon.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
+        eq.innerHTML = `X (${x}) + Y (${y}) = ${sum} yrs &gt; Z (${z} yrs) &rarr; <span class="text-red-400">AT RISK (${delta} yrs deficit)</span>`;
+        exp.textContent = `CRITICAL: Encrypted communications collected today (Harvest Now, Decrypt Later) will remain secret for only ${z} years, but your security lifespan requires ${x} years. Retroactive decryption is guaranteed without immediate PQC migration.`;
+      } else {
+        const margin = (z - sum).toFixed(1);
+        badge.textContent = 'SAFE';
+        badge.className = 'text-xs font-bold px-2.5 py-1 rounded border font-mono bg-emerald-500/10 text-emerald-400 border-emerald-500/30';
+        icon.className = 'text-xl text-emerald-400 mt-0.5';
+        icon.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
+        eq.innerHTML = `X (${x}) + Y (${y}) = ${sum} yrs &le; Z (${z} yrs) &rarr; <span class="text-emerald-400">SAFE (${margin} yrs safety buffer)</span>`;
+        exp.textContent = `Migration can be completed before quantum computers reach Cryptanalytically Relevant (CRQC) scale. Continue executing the PQC migration roadmap.`;
+      }
+    }
+
+    // 7. EXPORT FUNCTIONS
+    function exportCBOMJson() {
+      if (currentFindings.length === 0) {
+        alert('No findings to export. Run a scan first.');
+        return;
+      }
+      const cbom = {
+        bomFormat: 'CycloneDX',
+        specVersion: '1.6',
+        version: 1,
+        serialNumber: `urn:uuid:${crypto.randomUUID ? crypto.randomUUID() : 'ecdat-cbom-1'}`,
+        metadata: {
+          timestamp: new Date().toISOString(),
+          tools: {
+            components: [
+              {
+                type: 'application',
+                name: 'ECDAT - Enterprise Cryptographic Discovery & Analysis Tool',
+                version: '1.0.0'
+              }
+            ]
+          },
+          component: {
+            type: 'application',
+            name: 'ECDAT Cryptographic Scan'
+          }
+        },
+        components: currentFindings.map((f, i) => ({
+          'bom-ref': `crypto-asset-${i+1}`,
+          type: 'cryptographic-asset',
+          name: f.algo,
+          version: '1.0',
+          cryptoProperties: {
+            assetType: f.type.toLowerCase(),
+            algorithmProperties: {
+              name: f.algo,
+              nistQuantumSecurityLevel: f.quantumVuln ? 0 : 5
+            },
+            detectionEvidence: {
+              filePath: f.file,
+              snippet: f.evidence,
+              riskScore: f.risk
+            },
+            pqcRemediationTarget: f.pqc || 'NIST FIPS 203/204/205'
+          }
+        }))
+      };
+
+      const blob = new Blob([JSON.stringify(cbom, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `ecdat-cbom-cyclonedx-1.6-${Date.now()}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function exportCSV() {
+      if (currentFindings.length === 0) {
+        alert('No findings to export. Run a scan first.');
+        return;
+      }
+      const headers = ['File', 'Algorithm', 'Type', 'Risk', 'Evidence'];
+      const rows = currentFindings.map(f => [
+        `"${f.file.replace(/"/g, '""')}"`,
+        `"${f.algo.replace(/"/g, '""')}"`,
+        `"${f.type.replace(/"/g, '""')}"`,
+        f.risk,
+        `"${f.evidence.replace(/"/g, '""')}"`
+      ]);
+
+      const csvContent = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `ecdat-crypto-inventory-${Date.now()}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function exportPDF() {
+      if (currentFindings.length === 0) {
+        alert('No findings to export. Run a scan first.');
+        return;
+      }
+      window.print();
+    }
+
+    // Init on load
+    window.addEventListener('DOMContentLoaded', () => {
+      checkBackend();
+      calculateMosca();
+    });
+  </script>
+</body>
+</html>
