@@ -932,22 +932,33 @@ export default function App() {
                               </span>
                             </td>
                             <td className="px-3 py-2 text-slate-300 font-mono text-[11px]">
-                              {item.algo?.toUpperCase().includes("RSA")||
-                                item.algo?.toUpperCase().includes("ECC")||
-                                item.algo?.toUpperCase().includes("ECDH")||
-                                item.algo?.toUpperCase().includes("ECDSA")||
-                                item.algo?.toUpperCase().includes("DH")||
-                                ? "Quantum Vulnerable"
-                              : item.algo?.toUpperCase().includes("ML-KEM")||
-                                item.algo?.toUpperCase().includes("ML-DSA")||
-                                item.algo?.toUpperCase().includes("SLH-DSA")||
-                                ? "PQC Asset"
-                               : item.algo?.toUpperCase().includes("AES")||
-                                ? "Symmetric Encryption"
-                               : item.algo?.toUpperCase().includes("SHA")||
-                                 item.algo?.toUpperCase().includes("MD5")||
-                                ? "Hashing Asset"
-                                : "Crypto Asset"}
+                              {(()=>{
+                            const algo = String(item.algo || "").toUpperCase();
+                            if(
+                                algo.includes("RSA")||
+                                algo.includes("ECC")||
+                                algo.includes("ECDH")||
+                                algo.includes("ECDSA")||
+                                algo.includes("DH")
+                              ) {
+                                return "Quantum Vulnerable";
+                            }
+                             if(algo.includes("ML-KEM")||
+                                algo.includes("ML-DSA")||
+                                algo.includes("SLH-DSA")
+                                ) {
+                                return "PQC Asset";
+                             }
+                               if(algo.includes("AES"))
+                               {
+                                 return "Symmetric Encryption";
+                               }
+                               if(algo.includes("SHA")||algo.includes("MD5"))
+                               {
+                                 return "Hashing Asset";
+                               }
+                                return "Crypto Asset";
+                          })()}
                             </td>
                             <td className="px-3 py-2 text-center">
                               <span
