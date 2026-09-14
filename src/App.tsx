@@ -35,7 +35,25 @@ import {
 } from './cbomExporter';
 
 const BACKEND_URL = 'http://localhost:8000';
-
+const getPQCRecommendation = (algo: string): string =>{
+  const a = algo.toUpperCase();
+  if (a.includes("RSA")){
+    return "Migrate to ML-KEM for key exchange and ML-DSA for signatures";
+  }
+  if(a.includes("ECDSA") || a.includes("ECDH") || a.includes("ECC")){
+    return "Migrate to ML-DSA for signatures and ML-KEM for key exchange";
+  }
+  if(a.includes("DH")){
+    return "Replace DH key exchange with ML-KEM";
+  }
+  if(a.includes("AES")){
+    return "Use AES-256 and monitor for post-quantum transition";
+  }
+  if(a.includes("SHA")){
+    return "SHA-256/SHA-3 remain suitable; monitor cryptographic policy";
+  }
+  return "review algorithm and plan post-quantum migration";
+};
 export default function App() {
   // CRITICAL REQUIREMENT 1: NO AUTO-LOAD / START AT ZERO
   const [findings, setFindings] = useState<CryptoFinding[]>([]);
