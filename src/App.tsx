@@ -939,7 +939,7 @@ export default function App() {
                               moscaResult.isAtRisk
                               ? 'bg-red-500/10 text-red-400 border-red-500/30'
                               : 'bg-emarald-500/10 text-emarald-400 border-emarald-500/30'
-                            }'}>
+                            }`}>
                               {moscaResult.status}
                             </span>
                           </td>
