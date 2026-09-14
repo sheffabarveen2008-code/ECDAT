@@ -1087,9 +1087,7 @@ export default function App() {
                   </p>
                 </div>
               </div>
-            </div>
-
-            {/* PQC MIGRATION ROADMAP */}
+                      {/* PQC MIGRATION ROADMAP */}
             <div id="migration-section" className="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-sm">
               <div className="pb-3 border-b border-slate-800 flex items-center justify-between">
                 <div>
