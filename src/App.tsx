@@ -401,7 +401,20 @@ export default function App() {
           m.evidence = `SHA256: ${hashHex.substring(0, 16)}... | ${m.evidence}`;
           binaryFindings.push(m);
         });
-
+      //catalog the uploaded binary even when no crypto symbol is detected
+        if(!binaryFindings.some(f => f.file === file.name)){
+          binaryFindings.push({
+            id: `binary-${file.name}-${Date.now()}`,
+            file: file.name,
+            algo: "Unknown / Binary Artifact",
+            type: "Binary",
+            risk: 0,
+            evidence: `SHA256: ${hashHex} | No known cryptographic symbol detected`,
+            pqcTarget: "Manual cryptographic review required",
+            quantumVuln: false,
+            sha256: hashHex,
+          });
+        }
       } catch (err: any) {
         appendLog(`[WARN] Failed to analyze binary ${file.name}: ${err.message}`);
       }
