@@ -65,8 +65,12 @@ export default function App() {
     y: 5,  // Migration time (yrs)
     z: 8   // CRQC arrival (yrs)
   });
+
+  useEffect(()=>{
+    setMoscaResult(calculateMoscaTheorem(moscaParams));
+  }, [moscaParams]);
   const [moscaResult, setMoscaResult] = useState<MoscaCalculation>(() =>
-    calculateMoscaTheorem({ x: 10, y: 5, z: 8 })
+    calculateMoscaTheorem(moscaParams)
   );
 
   // Log container auto-scroll ref
