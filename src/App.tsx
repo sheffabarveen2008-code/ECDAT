@@ -936,12 +936,15 @@ export default function App() {
                               </td>
                             <td className="px-3 py-2 text-center">
                             <span className={`px-2 py-0.5 rounded border text-[11px] font-bold ${
-                              moscaResult.isAtRisk
-                              ? 'bg-red-500/10 text-red-400 border-red-500/30'
-                              : 'bg-emarald-500/10 text-emarald-400 border-emarald-500/30'
-                            }`}>
+                            <span
+                              className={
+                                moscaResult.isAtRisk
+                                ? 'px-2 py-0.5 rounded border text-[11px] font-bold bg-red-500/10 text-red-400 border-red-500/30'
+                                :'px-2 py-0.5 rounded border text-[11px] font-bold bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
+                              }
+                              >
                               {moscaResult.status}
-                            </span>
+                               </span>
                           </td>
                             <td className="px-3 py-2 text-slate-300 font-mono text-[11px] truncate max-w-[200px]" title={item.evidence}>
                               <code>{item.evidence}</code>
