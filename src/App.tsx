@@ -1077,7 +1077,7 @@ export default function App() {
                   <p id="mosca-equation" className="font-mono font-bold text-white">
                     X ({moscaParams.x}) + Y ({moscaParams.y}) = {moscaParams.x + moscaParams.y} yrs {moscaResult.isAtRisk ? '>' : '≤'} Z ({moscaParams.z} yrs) &rarr;{' '}
                     <span className={moscaResult.isAtRisk ? 'text-red-400' : 'text-emerald-400'}>
-                      {moscaResult.status} {moscaResult.isAtRisk ? `(${moscaResult.delta} yrs deficit)` : `(${moscaResult.delta} yrs buffer)`}
+                      {moscaResult.status} {moscaResult.isAtRisk ? "(" + moscaResult.delta + "yrs deficit)" : "(" + moscaResult.delta + " yrs buffer)"}
                     </span>
                   </p>
                   <p id="mosca-explanation" className="text-slate-300 mt-0.5 leading-relaxed">
