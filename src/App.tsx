@@ -340,7 +340,17 @@ export default function App() {
         const matches = scanCodeContent(relPath, text);
         if (matches.length > 0) {
           newFindings.push(...matches);
-          appendLog(`[LOCAL] Found ${matches.length} artifact(s) in ${relPath}`);
+        }else{
+          newFindings.push({
+            id: `local-${file.name}-${Date.now()}`,
+            file: relPath,
+            algo: "unknown / Local File",
+            type: "File",
+            risk: 0,
+            evidence: "No known cryptographic algorithm detected",
+            pqcTarget: "manual cryptographic review required",
+            quantumVulm: false
+          });
         }
         scanned++;
       } catch {
