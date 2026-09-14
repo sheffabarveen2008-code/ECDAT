@@ -999,11 +999,11 @@ export default function App() {
                 </div>
                 <span
                   id="mosca-badge"
-                  className={`text-xs font-bold px-2.5 py-1 rounded border font-mono ${
+                  className={
                     moscaResult.isAtRisk
                       ? 'bg-red-500/10 text-red-400 border-red-500/30'
                       : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
-                  }`}
+                  }
                 >
                   {moscaResult.status}
                 </span>
