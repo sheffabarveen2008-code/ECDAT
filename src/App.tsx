@@ -1070,7 +1070,7 @@ export default function App() {
 
               {/* Mosca Result Explanation Box */}
               <div id="mosca-result-box" className="mt-3 p-3 rounded-lg bg-slate-950 border border-slate-800 text-xs flex items-start gap-3">
-                <div className={`text-xl mt-0.5 ${moscaResult.isAtRisk ? 'text-red-400' : 'text-emerald-400'}`}>
+                <div className={"text-xl mt-0.5 " + (moscaResult.isAtRisk ? "text-red-400" : "text-emerald-400")}>
                   {moscaResult.isAtRisk ? <AlertTriangle className="w-5 h-5" /> : <CheckCircle2 className="w-5 h-5" />}
                 </div>
                 <div>
