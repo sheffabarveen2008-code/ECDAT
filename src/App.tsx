@@ -949,6 +949,9 @@ export default function App() {
                                 {item.risk}
                               </span>
                             </td>
+                            <td className="px-3 py-2 text-cyan-300 text-[11px]">
+                              {getPQCRecommendation(item.algo)}
+                                </td>
                             <td className="px-3 py-2 text-slate-300 font-mono text-[11px]">
                               {(()=>{
                             const algo = String(item.algo || "").toUpperCase();
